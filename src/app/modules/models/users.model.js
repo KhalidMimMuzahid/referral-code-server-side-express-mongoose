@@ -1,6 +1,5 @@
 const { Schema, model } = require("mongoose");
 const validator = require("validator");
-
 const userSchema = new Schema({
   name: {
     type: String,
@@ -23,19 +22,26 @@ const userSchema = new Schema({
   password: {
     type: String,
     required: [true, "Password must be provided"],
-    validate: {
-      validator: (value) =>
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,10}$/.test(
-          value
-        ),
-      message: "Invalid password",
-    },
+    // validate: {
+    //   validator: (value) =>
+    //     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,10}$/.test(
+    //       value
+    //     ),
+    //   message: "Invalid password",
+    // },
   },
   referredID: {
     type: Number,
-    required: [true, "Referred ID must be provided"],
+    index: true,
+    unique: true,
+    required: [true, "ReferredID must be provided"],
+  },
+  referredTo: {
+    type: Number,
+    required: [true, "ReferredTo id must be provided"],
   },
 });
+
 
 const UserModel = model("user", userSchema);
 
