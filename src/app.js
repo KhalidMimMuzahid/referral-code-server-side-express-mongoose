@@ -11,4 +11,8 @@ app.use(cors());
 // about the users router
 app.use("/api/v1/users", userRouter);
 
+app.get("/", (req, res) => {
+  res.send("Welcome to our server");
+});
+
 module.exports = app;
