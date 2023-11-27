@@ -5,12 +5,19 @@ const createUser = async (req, res) => {
     const user = req.body;
     const result = await userServices.createUserInToDB(user);
 
-    // console.log("okkkk:", result);
-    res.json({
-      success: true,
-      message: "User created successfully",
-      data: result,
-    });
+    if (result?.email) {
+      res.json({
+        success: true,
+        message: "User created successfully",
+        data: result,
+      });
+    } else {
+      res.status(200).json({
+        success: false,
+        message: "duplicate email",
+      });
+    }
+
   } catch (error) {
     res.status(200).json({
       success: false,
@@ -47,5 +54,25 @@ const verifyUser = async (req, res) => {
   }
 };
 
-const userControllers = { createUser, verifyUser };
+
+const myTrees = async (req, res) => {
+  try {
+    const referredID = req?.query?.referredID;
+    // console.log(referredID);
+    const result = await userServices.myTreesFromDB(referredID);
+
+    res.json({
+      success: true,
+      message: "trees found successfully",
+      data: result,
+    });
+  } catch (error) {
+    res.status(200).json({
+      success: false,
+      message: "Something went wrong",
+      error,
+    });
+  }
+};
+const userControllers = { createUser, verifyUser, myTrees };
 module.exports = userControllers;

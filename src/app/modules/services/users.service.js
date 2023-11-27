@@ -4,6 +4,12 @@ const bcrypt = require("bcrypt");
 const saltRounds = 10;
 // const salt = bcrypt.genSaltSync(saltRounds);
 const createUserInToDB = async (user) => {
+  // first finding user with this email, If findOneAndUpdate, means duplicate email, cause somethime  {unique: true} not works on the schema
+  const userData = await UserModel.findOne({ email: user?.email });
+
+  if (userData?.email) {
+    return false;
+  }
   const lastUser = await UserModel.findOne().sort({
     referredID: -1,
   });
@@ -42,6 +48,13 @@ verifyUserToDB = async (user) => {
     return { success: false, message: "email not found" };
   }
 };
-const userServices = { createUserInToDB, verifyUserToDB };
+
+const myTreesFromDB = async (referredID) => {
+  // finding all user who referred me by default
+  const referredUsers = await UserModel.find({ referredTo: referredID });
+
+  return referredUsers;
+};
+const userServices = { createUserInToDB, verifyUserToDB, myTreesFromDB };
 
 module.exports = userServices;
